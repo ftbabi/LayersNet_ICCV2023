@@ -15,26 +15,27 @@ from layersnet.datasets.utils import writeH5, readH5
 @DATASETS.register_module()
 class LayersDataset(BaseDataset):
 
-    def __init__(self, env_cfg, phase, **kwargs):
+    def __init__(self, env_cfg, phase, is_init=False, **kwargs):
         super(LayersDataset, self).__init__(env_cfg=env_cfg, phase=phase, **kwargs)
 
         # Dynamic statics
         stat_path = os.path.join(self.env_cfg.layers_base.generated_dir, 'stat.h5')
-        stat = readH5(
-            ['position', 'velocity', 'acceleration', 'trans_position', 'trans_velocity', 'trans_acceleration'],
-            stat_path)
-        cov_stat = [cs[1:4] for cs in stat]
-        cov_stat = np.concatenate(cov_stat, axis=-1)
-        self.cov_stat = cov_stat[:, :9]
-        self.trans_cov_stat = cov_stat[:, 9:]
+        if not is_init:
+            stat = readH5(
+                ['position', 'velocity', 'acceleration', 'trans_position', 'trans_velocity', 'trans_acceleration'],
+                stat_path)
+            cov_stat = [cs[1:4] for cs in stat]
+            cov_stat = np.concatenate(cov_stat, axis=-1)
+            self.cov_stat = cov_stat[:, :9]
+            self.trans_cov_stat = cov_stat[:, 9:]
 
-        stat = [self._reformat_stat(cs) for cs in stat]
-        stat = np.concatenate(stat, axis=-1)
-        # If the std = 0, it should be set to 1
-        stat[1, np.where(stat[1, :] == 0)] = 1.0
-        assert 9 == stat.shape[-1] / 2
-        self.stat = stat[:, :9]
-        self.trans_stat = stat[:, 9:]
+            stat = [self._reformat_stat(cs) for cs in stat]
+            stat = np.concatenate(stat, axis=-1)
+            # If the std = 0, it should be set to 1
+            stat[1, np.where(stat[1, :] == 0)] = 1.0
+            assert 9 == stat.shape[-1] / 2
+            self.stat = stat[:, :9]
+            self.trans_stat = stat[:, 9:]
         
         self.data_names = [
             'g_type',

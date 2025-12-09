@@ -46,7 +46,7 @@ pip3 install openmim
 mim install mmcv-full==1.6.1
 
 # Other dependent packages
-pip3 install h5py pyrender trimesh numpy==1.23.1 tqdm plotly scipy chumpy matplotlib
+pip3 install h5py pyrender trimesh numpy==1.23.1 tqdm plotly scipy chumpy matplotlib yapf==0.40.1
 ```
 2. Clone and install this repo
 ```

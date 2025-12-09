@@ -44,20 +44,23 @@ def main():
     if args.dataset == 'train':
         # Train data
         logger.info('Generate training data')
+        cfg.data.train['is_init'] = True
         dataset = build_dataset(cfg.data.train)
     elif args.dataset == 'val':
         # Val data
         logger.info('Generate validation data')
+        cfg.data.val['is_init'] = True
         dataset = build_dataset(cfg.data.val)
     elif args.dataset == 'test':
         # Val data
         logger.info('Generate test data')
+        cfg.data.test['is_init'] = True
         dataset = build_dataset(cfg.data.test)
     
     if args.type == 'dynamic':
-        dataset.generate_data(save_dir=args.save_dir, seq=args.seq)
+        dataset.generate_data(save_dir=args.save_dir)
     else:
-        dataset.generate_static_data(save_dir=args.save_dir, seq=args.seq)
+        dataset.generate_static_data(save_dir=args.save_dir)
 
     logger.info('Finish')
 
